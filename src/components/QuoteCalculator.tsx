@@ -362,11 +362,11 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
                                             checked={isFreightEnabled}
                                             onChange={() => setIsFreightEnabled(!isFreightEnabled)}
                                         />
-                                        <div className="block bg-gray-600 w-14 h-8 rounded-full"></div>
-                                        <div className="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                                        <div className={`block w-14 h-8 rounded-full transition-all duration-300 ${isFreightEnabled ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg shadow-green-500/50' : 'bg-gray-400 dark:bg-gray-600'}`}></div>
+                                        <div className={`dot absolute top-1 bg-white w-6 h-6 rounded-full transition-all duration-300 shadow-md ${isFreightEnabled ? 'translate-x-6 bg-white' : 'translate-x-1'}`}></div>
                                     </div>
-                                    <div className="ml-3 text-textPrimary dark:text-white font-medium">
-                                        {isFreightEnabled ? 'Frete Ativo' : 'Frete Inativo'}
+                                    <div className={`ml-3 font-semibold transition-colors duration-300 ${isFreightEnabled ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                                        {isFreightEnabled ? '✓ Frete Ativo' : 'Frete Inativo'}
                                     </div>
                                 </label>
                             </div>
@@ -383,60 +383,60 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
                         Resumo do Orçamento
                     </h3>
                     <div className="space-y-4 text-sm">
-                        <div className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-all duration-300 hover:scale-105">
+                        <div className="flex justify-between items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg transition-all duration-300 hover:scale-105 border border-indigo-100 dark:border-indigo-800">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
-                                <span className="text-textSecondary dark:text-slate-300 font-medium">Custo Material:</span>
+                                <div className="w-3 h-3 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full mr-3 shadow-sm"></div>
+                                <span className="text-gray-700 dark:text-slate-200 font-semibold">Custo Material:</span>
                             </div>
-                            <span className="font-bold text-blue-600 dark:text-blue-400">R$ {calculated.materialCost.toFixed(2)}</span>
+                            <span className="font-bold text-indigo-700 dark:text-indigo-400">R$ {calculated.materialCost.toFixed(2)}</span>
                         </div>
                         
-                        <div className="flex justify-between items-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg transition-all duration-300 hover:scale-105">
+                        <div className="flex justify-between items-center p-3 bg-violet-50 dark:bg-violet-900/20 rounded-lg transition-all duration-300 hover:scale-105 border border-violet-100 dark:border-violet-800">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
-                                <span className="text-textSecondary dark:text-slate-300 font-medium">Custo de Fabricação:</span>
+                                <div className="w-3 h-3 bg-gradient-to-r from-violet-500 to-violet-600 rounded-full mr-3 shadow-sm"></div>
+                                <span className="text-gray-700 dark:text-slate-200 font-semibold">Custo de Fabricação:</span>
                             </div>
-                            <span className="font-bold text-purple-600 dark:text-purple-400">R$ {calculated.totalManufacturingCostPerItem.toFixed(2)}</span>
+                            <span className="font-bold text-violet-700 dark:text-violet-400">R$ {calculated.totalManufacturingCostPerItem.toFixed(2)}</span>
                         </div>
                         
-                        <div className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg transition-all duration-300 hover:scale-105">
+                        <div className="flex justify-between items-center p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg transition-all duration-300 hover:scale-105 border border-amber-100 dark:border-amber-800">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
-                                <span className="text-textSecondary dark:text-slate-300 font-medium">Custo de Frete:</span>
+                                <div className="w-3 h-3 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mr-3 shadow-sm"></div>
+                                <span className="text-gray-700 dark:text-slate-200 font-semibold">Custo de Frete:</span>
                             </div>
-                            <span className="font-bold text-orange-600 dark:text-orange-400">R$ {calculated.freightCost.toFixed(2)}</span>
+                            <span className="font-bold text-amber-700 dark:text-amber-400">R$ {calculated.freightCost.toFixed(2)}</span>
                         </div>
                         
-                        <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg transition-all duration-300 hover:scale-105">
+                        <div className="flex justify-between items-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg transition-all duration-300 hover:scale-105 border border-slate-200 dark:border-slate-600">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 bg-gray-500 rounded-full mr-3"></div>
-                                <span className="text-textSecondary dark:text-slate-300 font-medium">Custo Total do Projeto:</span>
+                                <div className="w-3 h-3 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full mr-3 shadow-sm"></div>
+                                <span className="text-gray-700 dark:text-slate-200 font-semibold">Custo Total do Projeto:</span>
                             </div>
-                            <span className="font-bold text-gray-700 dark:text-gray-300">R$ {calculated.totalProjectCost.toFixed(2)}</span>
+                            <span className="font-bold text-slate-800 dark:text-slate-100">R$ {calculated.totalProjectCost.toFixed(2)}</span>
                         </div>
 
-                        <div className="flex justify-between items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg transition-all duration-300 hover:scale-105">
+                        <div className="flex justify-between items-center p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg transition-all duration-300 hover:scale-105 border border-emerald-100 dark:border-emerald-800">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                                <span className="text-textSecondary dark:text-slate-300 font-medium">Lucro (interno):</span>
+                                <div className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full mr-3 shadow-sm"></div>
+                                <span className="text-gray-700 dark:text-slate-200 font-semibold">Lucro (interno):</span>
                             </div>
-                            <span className="font-bold text-green-600 dark:text-green-400">R$ {calculated.profitValue.toFixed(2)}</span>
+                            <span className="font-bold text-emerald-700 dark:text-emerald-400">R$ {calculated.profitValue.toFixed(2)}</span>
                         </div>
                         
-                        <div className="flex justify-between items-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border-t-2 border-yellow-300 dark:border-yellow-600 transition-all duration-300 hover:scale-105">
+                        <div className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg transition-all duration-300 hover:scale-105 border border-orange-100 dark:border-orange-800">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
-                                <span className="font-bold text-gray-700 dark:text-white">Peso Total:</span>
+                                <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full mr-3 shadow-sm"></div>
+                                <span className="text-gray-700 dark:text-slate-200 font-semibold">Peso Total:</span>
                             </div>
-                            <span className="font-bold text-yellow-600 dark:text-yellow-400">{calculated.totalWeight.toFixed(2)} kg</span>
+                            <span className="font-bold text-orange-700 dark:text-orange-400">{calculated.totalWeight.toFixed(2)} kg</span>
                         </div>
                         
-                         <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border-2 border-green-200 dark:border-green-700 transition-all duration-300 hover:scale-105">
+                         <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 dark:from-green-900/30 dark:via-emerald-900/30 dark:to-teal-900/30 rounded-xl border-2 border-green-300 dark:border-green-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                             <div className="flex items-center">
-                                <div className="w-4 h-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mr-3"></div>
+                                <div className="w-4 h-4 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-full mr-3 shadow-md animate-pulse"></div>
                                 <span className="font-bold text-lg text-gray-800 dark:text-white">Valor Final:</span>
                             </div>
-                            <span className="font-bold text-2xl text-green-700 dark:text-green-400">R$ {calculated.finalValue.toFixed(2)}</span>
+                            <span className="font-bold text-2xl bg-gradient-to-r from-green-700 via-emerald-700 to-teal-700 dark:from-green-400 dark:via-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">R$ {calculated.finalValue.toFixed(2)}</span>
                         </div>
                     </div>
                     {items.length > 0 && (
