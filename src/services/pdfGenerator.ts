@@ -49,7 +49,13 @@ export const generateQuotePDF = (quote: Quote, materials: Material[], settings: 
   quote.items.forEach(item => {
     const material = getMaterialById(item.materialId);
     if (material) {
-      const itemCost = material.unitCost * item.quantity;
+      // Calcular custo unitário somando todos os componentes
+      const componentsCost = material.components.reduce((acc, component) => {
+        return acc + (component.unitCost || 0);
+      }, 0);
+      const unitCost = componentsCost > 0 ? componentsCost : material.unitCost;
+      
+      const itemCost = unitCost * item.quantity;
       const itemSellPrice = itemCost * (1 + (quote.profitMargin / 100)); // Simplified for itemization, real total uses more factors
       const totalItemWeight = material.unitWeight * item.quantity;
 
@@ -58,7 +64,7 @@ export const generateQuotePDF = (quote: Quote, materials: Material[], settings: 
         item.quantity,
         material.unitWeight.toFixed(2),
         totalItemWeight.toFixed(2),
-        (calculated.materialCost > 0 ? ((material.unitCost * item.quantity) / calculated.materialCost) * calculated.finalValue : 0).toFixed(2) // Pro-rata final value
+        (calculated.materialCost > 0 ? ((unitCost * item.quantity) / calculated.materialCost) * calculated.finalValue : 0).toFixed(2) // Pro-rata final value
       ];
       tableRows.push(row);
     }

@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Material, Quote, AppSettings, Category } from '../types';
+import { Material, Quote, AppSettings, Category, Client } from '../types';
 import { useAuth } from './AuthContext';
 import { normalizeMaterials } from '../utils/normalizeMaterials';
 
@@ -14,9 +14,14 @@ interface DataContextType {
   setQuotes: React.Dispatch<React.SetStateAction<Quote[]>>;
   settings: AppSettings;
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
+  clients: Client[];
+  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   deleteMaterial: (id: string) => void;
   addMaterial: (material: Material) => void;
   updateMaterial: (material: Material) => void;
+  deleteClient: (id: string) => void;
+  addClient: (client: Client) => void;
+  updateClient: (client: Client) => void;
 }
 
 export const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -75,9 +80,14 @@ export const DataProvider: React.FC<{ children: ReactNode; testCurrentUser?: any
           setQuotes: noop as any,
           settings: defaultSettings,
           setSettings: noop as any,
+          clients: [],
+          setClients: noop as any,
           deleteMaterial: (_: string) => {},
           addMaterial: (_: Material) => {},
           updateMaterial: (_: Material) => {},
+          deleteClient: (_: string) => {},
+          addClient: (_: Client) => {},
+          updateClient: (_: Client) => {},
         }}
       >
         {children}
@@ -230,6 +240,10 @@ export const DataProvider: React.FC<{ children: ReactNode; testCurrentUser?: any
   const categories: Category[] = Array.isArray(_categories[0]) ? _categories[0] : _categories[0] ?? defaultCategories;
   const setCategories: React.Dispatch<React.SetStateAction<Category[]>> = typeof _categories[1] === 'function' ? _categories[1] : (() => {}) as any;
 
+  const _clients = (useLocalStorage<Client[]>(`sored_clients_${tenantId}`, []) as any) || [];
+  const clients: Client[] = Array.isArray(_clients[0]) ? _clients[0] : _clients[0] ?? [];
+  const setClients: React.Dispatch<React.SetStateAction<Client[]>> = typeof _clients[1] === 'function' ? _clients[1] : (() => {}) as any;
+
   const deleteMaterial = (id: string) => {
     setMaterials(prevMaterials => prevMaterials.filter(material => material.id !== id));
   };
@@ -246,8 +260,24 @@ export const DataProvider: React.FC<{ children: ReactNode; testCurrentUser?: any
     );
   };
 
+  const deleteClient = (id: string) => {
+    setClients(prevClients => prevClients.filter(client => client.id !== id));
+  };
+
+  const addClient = (client: Client) => {
+    setClients(prevClients => [...prevClients, client]);
+  };
+
+  const updateClient = (updatedClient: Client) => {
+    setClients(prevClients =>
+      prevClients.map(client =>
+        client.id === updatedClient.id ? updatedClient : client
+      )
+    );
+  };
+
   return (
-    <DataContext.Provider value={{ materials, setMaterials, categories, setCategories, quotes, setQuotes, settings, setSettings, deleteMaterial, addMaterial, updateMaterial }}>
+    <DataContext.Provider value={{ materials, setMaterials, categories, setCategories, quotes, setQuotes, settings, setSettings, clients, setClients, deleteMaterial, addMaterial, updateMaterial, deleteClient, addClient, updateClient }}>
       {children}
     </DataContext.Provider>
   );

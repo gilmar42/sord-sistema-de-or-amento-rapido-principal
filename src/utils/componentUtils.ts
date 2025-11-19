@@ -20,48 +20,56 @@ interface ComponentSize {
 /**
  * Formata o tamanho de um componente de forma consistente
  * @param component - O componente com dados de dimensão
- * @returns String formatada com as dimensões ou "-" se não houver dados
+ * @returns String formatada com as dimensões (primeiros 3 caracteres do valor) ou "-" se não houver dados
  */
 export const formatComponentSize = (component: ComponentSize): string => {
   const parts: string[] = [];
 
   // Tentar pegar comprimento
   if (component.lengthValue !== undefined && component.lengthValue !== null) {
-    parts.push(`C: ${component.lengthValue}${component.lengthUnit || 'mm'}`);
+    const valueStr = String(component.lengthValue).substring(0, 3);
+    parts.push(`C: ${valueStr}${component.lengthUnit || 'mm'}`);
   } else if (component.rawLengthInput && component.rawLengthInput.trim() !== '') {
-    parts.push(`C: ${component.rawLengthInput}`);
+    const valueStr = component.rawLengthInput.substring(0, 3);
+    parts.push(`C: ${valueStr}`);
   }
 
   // Tentar pegar diâmetro
   if (component.diameterValue !== undefined && component.diameterValue !== null) {
-    parts.push(`Ø: ${component.diameterValue}${component.diameterUnit || 'mm'}`);
+    const valueStr = String(component.diameterValue).substring(0, 3);
+    parts.push(`Ø: ${valueStr}${component.diameterUnit || 'mm'}`);
   } else if (component.rawDiameterInput && component.rawDiameterInput.trim() !== '') {
-    parts.push(`Ø: ${component.rawDiameterInput}`);
+    const valueStr = component.rawDiameterInput.substring(0, 3);
+    parts.push(`Ø: ${valueStr}`);
   }
 
   // Tentar pegar largura
   if (component.widthValue !== undefined && component.widthValue !== null) {
-    parts.push(`L: ${component.widthValue}${component.widthUnit || 'mm'}`);
+    const valueStr = String(component.widthValue).substring(0, 3);
+    parts.push(`L: ${valueStr}${component.widthUnit || 'mm'}`);
   } else if (component.rawWidthInput && component.rawWidthInput.trim() !== '') {
-    parts.push(`L: ${component.rawWidthInput}`);
+    const valueStr = component.rawWidthInput.substring(0, 3);
+    parts.push(`L: ${valueStr}`);
   }
 
   // Se tiver rawSizeString (campo de fallback da normalização), usar
   if (parts.length === 0 && component.rawSizeString && component.rawSizeString.trim() !== '') {
-    return String(component.rawSizeString);
+    const valueStr = String(component.rawSizeString).substring(0, 3);
+    return valueStr;
   }
 
   // Verificar se component tem sizeValue (para compatibilidade com dados não normalizados)
   if (parts.length === 0 && component.sizeValue !== undefined && component.sizeValue !== null) {
     // Se tiver sizeValue como string direta, usar
     if (typeof component.sizeValue === 'string' && component.sizeValue.trim() !== '') {
-      return String(component.sizeValue);
+      const valueStr = String(component.sizeValue).substring(0, 3);
+      return valueStr;
     }
 
     // Se tiver sizeValue como número, converter para string
     if (typeof component.sizeValue === 'number') {
-      const result = `${component.sizeValue}${component.sizeUnit || ''}`;
-      return String(result);
+      const valueStr = String(component.sizeValue).substring(0, 3);
+      return `${valueStr}${component.sizeUnit || ''}`;
     }
 
     // Se sizeValue é um objeto, tentar extrair dados
@@ -70,13 +78,16 @@ export const formatComponentSize = (component: ComponentSize): string => {
       const objParts: string[] = [];
       
       if (component.sizeValue.lengthValue !== undefined && component.sizeValue.lengthValue !== null) {
-        objParts.push(`C: ${component.sizeValue.lengthValue}${component.sizeValue.lengthUnit || 'mm'}`);
+        const valueStr = String(component.sizeValue.lengthValue).substring(0, 3);
+        objParts.push(`C: ${valueStr}${component.sizeValue.lengthUnit || 'mm'}`);
       }
       if (component.sizeValue.diameterValue !== undefined && component.sizeValue.diameterValue !== null) {
-        objParts.push(`Ø: ${component.sizeValue.diameterValue}${component.sizeValue.diameterUnit || 'mm'}`);
+        const valueStr = String(component.sizeValue.diameterValue).substring(0, 3);
+        objParts.push(`Ø: ${valueStr}${component.sizeValue.diameterUnit || 'mm'}`);
       }
       if (component.sizeValue.widthValue !== undefined && component.sizeValue.widthValue !== null) {
-        objParts.push(`L: ${component.sizeValue.widthValue}${component.sizeValue.widthUnit || 'mm'}`);
+        const valueStr = String(component.sizeValue.widthValue).substring(0, 3);
+        objParts.push(`L: ${valueStr}${component.sizeValue.widthUnit || 'mm'}`);
       }
       
       if (objParts.length > 0) {

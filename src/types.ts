@@ -89,3 +89,14 @@ export interface Category {
   id: string;
   name: string;
 }
+
+export interface Client {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  document: string; // CPF ou CNPJ
+  notes: string;
+  createdAt: string;
+}

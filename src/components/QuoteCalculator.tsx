@@ -23,7 +23,6 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
   
   const [clientName, setClientName] = useState('');
   const [items, setItems] = useState<QuoteItem[]>([]);
-  const [laborCost, setLaborCost] = useState(0);
   const [freightCost, setFreightCost] = useState(0);
   const [profitMargin, setProfitMargin] = useState(20);
   const [isFreightEnabled, setIsFreightEnabled] = useState(false);
@@ -38,7 +37,6 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
     if (quoteToEdit) {
       setClientName(quoteToEdit.clientName);
       setItems(quoteToEdit.items || []);
-      setLaborCost(quoteToEdit.laborCost);
       setFreightCost(quoteToEdit.freightCost);
       setProfitMargin(quoteToEdit.profitMargin);
       setIsFreightEnabled(quoteToEdit.isFreightEnabled || false);
@@ -51,7 +49,6 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
   const resetForm = () => {
     setClientName('');
     setItems([]);
-    setLaborCost(0);
     setFreightCost(0);
     setProfitMargin(20);
     setIsFreightEnabled(false);
@@ -60,13 +57,35 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
   };
 
   const calculated: CalculatedCosts = useMemo(() => {
+    // Calcular custo total dos materiais somando o custo de cada componente
     const materialCost = items.reduce((acc, item) => {
       const material = materials && Array.isArray(materials) ? materials.find(m => m.id === item.materialId) : undefined;
-      return acc + (material ? material.unitCost * item.quantity : 0);
+      if (!material) return acc;
+      
+      // Somar o custo de todos os componentes do material
+      const componentsCost = material.components.reduce((compAcc, component) => {
+        return compAcc + (component.unitCost || 0);
+      }, 0);
+      
+      // Se não houver componentes, usar o unitCost do material
+      const materialUnitCost = componentsCost > 0 ? componentsCost : material.unitCost;
+      
+      return acc + (materialUnitCost * item.quantity);
     }, 0);
 
-    const laborOnlyIndirectCosts = laborCost;
-    const totalProjectCost = materialCost + laborOnlyIndirectCosts + (isFreightEnabled ? freightCost : 0);
+    // Custo de fabricação calculado automaticamente: soma de todos os componentes de todos os itens
+    const totalManufacturingCost = items.reduce((acc, item) => {
+      const material = materials && Array.isArray(materials) ? materials.find(m => m.id === item.materialId) : undefined;
+      if (!material) return acc;
+      
+      const componentsCost = material.components.reduce((compAcc, component) => {
+        return compAcc + (component.unitCost || 0);
+      }, 0);
+      
+      return acc + (componentsCost * item.quantity);
+    }, 0);
+    
+    const totalProjectCost = materialCost + totalManufacturingCost + (isFreightEnabled ? freightCost : 0);
     const profitValue = totalProjectCost * (profitMargin / 100);
     const finalValue = totalProjectCost + profitValue;
 
@@ -76,20 +95,19 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
     }, 0);
 
     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
-    const totalManufacturingCostPerItem = laborOnlyIndirectCosts * totalQuantity;
 
     return {
       materialCost,
       totalGrossCost: materialCost,
-      indirectCosts: laborOnlyIndirectCosts,
+      indirectCosts: totalManufacturingCost,
       freightCost: isFreightEnabled ? freightCost : 0,
       totalProjectCost,
-      totalManufacturingCostPerItem,
+      totalManufacturingCostPerItem: totalManufacturingCost,
       profitValue,
       finalValue,
       totalWeight,
     };
-  }, [items, laborCost, freightCost, profitMargin, materials, isFreightEnabled]);
+  }, [items, freightCost, profitMargin, materials, isFreightEnabled]);
 
   const handleAddItem = useCallback((material: Material) => {
         setIsModalOpen(false);
@@ -121,7 +139,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
     const quoteData: Omit<Quote, 'id' | 'date'> = {
         clientName,
         items,
-        laborCost,
+        laborCost: 0,
         freightCost,
         profitMargin,
         isFreightEnabled,
@@ -148,7 +166,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
         date: new Date().toISOString(),
         clientName,
         items,
-        laborCost,
+        laborCost: 0,
         freightCost,
         profitMargin,
         isFreightEnabled
@@ -169,7 +187,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
       date: new Date().toISOString(),
       clientName,
       items,
-      laborCost,
+      laborCost: 0,
       freightCost,
       profitMargin,
       isFreightEnabled
@@ -229,6 +247,14 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
                                 {items.map(item => {
                                     const material = getMaterialById(item.materialId);
                                     if (!material) return null;
+                                    
+                                    // Calcular custo unitário somando todos os componentes
+                                    const componentsCost = material.components.reduce((acc, component) => {
+                                      return acc + (component.unitCost || 0);
+                                    }, 0);
+                                    const unitCost = componentsCost > 0 ? componentsCost : material.unitCost;
+                                    const totalCost = unitCost * item.quantity;
+                                    
                                     return (
                                         <tr key={item.materialId} className="border-b border-gray-200 dark:border-slate-600 hover:bg-gradient-to-r hover:from-primary/5 hover:to-blue-500/5 dark:hover:from-slate-700 dark:hover:to-slate-600 transition-all duration-300 ease-in-out animate-fade-in-up group">
                                             <td className="px-6 py-4 font-medium text-textPrimary dark:text-white group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-300">
@@ -246,10 +272,10 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
                                                     min="1"
                                                 />
                                             </td>
-                                            <td className="px-6 py-4 text-center font-semibold text-green-600 dark:text-green-400">R$ {material.unitCost.toFixed(2)}</td>
+                                            <td className="px-6 py-4 text-center font-semibold text-green-600 dark:text-green-400">R$ {unitCost.toFixed(2)}</td>
                                             <td className="px-6 py-4 text-center font-bold text-textPrimary dark:text-white">
                                                 <span className="bg-green-100 dark:bg-green-900/30 px-3 py-1 rounded-full text-green-800 dark:text-green-300">
-                                                    R$ {(material.unitCost * item.quantity).toFixed(2)}
+                                                    R$ {totalCost.toFixed(2)}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-center">
@@ -321,24 +347,6 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ quoteToEdit, s
                                     max="100"
                                 />
                                 <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-slate-400 font-medium">%</span>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="laborCost" className="block text-sm font-medium text-textSecondary dark:text-slate-300 flex items-center">
-                                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                                Custo de Fabricação Unitário (R$)
-                            </label>
-                            <div className="relative">
-                                <input 
-                                    id="laborCost"
-                                    type="number"
-                                    value={laborCost}
-                                    onChange={e => setLaborCost(parseFloat(e.target.value))}
-                                    className="block w-full px-4 py-3 pl-12 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-textPrimary dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 focus:border-blue-500 transition-all duration-300 hover:shadow-lg"
-                                    min="0"
-                                    step="0.01"
-                                />
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-slate-400 font-medium">R$</span>
                             </div>
                         </div>
                         <div>

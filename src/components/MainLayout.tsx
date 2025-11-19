@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { QuoteCalculator } from './QuoteCalculator';
 import { MaterialManagement } from './MaterialManagement';
-
+import { ClientManagement } from './ClientManagement';
 import { Settings } from './Settings';
 import { SavedQuotes } from './SavedQuotes';
 import { Quote } from '../types';
-import { SoredIcon, CalculatorIcon, BoxIcon, CogIcon, DocumentTextIcon, ArrowLeftOnRectangleIcon, SunIcon, MoonIcon } from './Icons';
+import { SoredIcon, CalculatorIcon, BoxIcon, CogIcon, DocumentTextIcon, ArrowLeftOnRectangleIcon, SunIcon, MoonIcon, UserGroupIcon } from './Icons';
 import { useAuth } from './../context/AuthContext';
 import { NavItem } from './NavItem';
 import { useDarkMode } from '../hooks/useDarkMode';
 
 
-type View = 'calculator' | 'materials' | 'settings' | 'quotes';
+type View = 'calculator' | 'materials' | 'settings' | 'quotes' | 'clients';
 
 export const MainLayout: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('calculator');
@@ -35,6 +35,8 @@ export const MainLayout: React.FC = () => {
         return <QuoteCalculator data-testid="quote-calculator" quoteToEdit={quoteToEdit} setQuoteToEdit={setQuoteToEdit} onNavigateToMaterials={() => setCurrentView('materials')} />;
       case 'materials':
         return <MaterialManagement activeView={currentView} />;
+      case 'clients':
+        return <ClientManagement />;
       case 'settings':
         return <Settings />;
       case 'quotes':
@@ -69,6 +71,7 @@ export const MainLayout: React.FC = () => {
             <nav className="flex flex-row md:flex-col justify-around md:space-y-2">
               <NavItem view="calculator" label="Novo Orçamento" icon={<CalculatorIcon className="w-5 h-5" />} currentView={currentView} setCurrentView={setCurrentView} setQuoteToEdit={setQuoteToEdit} />
               <NavItem view="quotes" label="Orçamentos" icon={<DocumentTextIcon className="w-5 h-5" />} currentView={currentView} setCurrentView={setCurrentView} setQuoteToEdit={setQuoteToEdit} />
+              <NavItem view="clients" label="Clientes" icon={<UserGroupIcon className="w-5 h-5" />} currentView={currentView} setCurrentView={setCurrentView} setQuoteToEdit={setQuoteToEdit} />
               <NavItem view="materials" label="Materiais" icon={<BoxIcon className="w-5 h-5" />} currentView={currentView} setCurrentView={setCurrentView} setQuoteToEdit={setQuoteToEdit} />
               <NavItem view="settings" label="Configurações" icon={<CogIcon className="w-5 h-5" />} currentView={currentView} setCurrentView={setCurrentView} setQuoteToEdit={setQuoteToEdit} />
             </nav>
