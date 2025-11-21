@@ -32,20 +32,20 @@ export const NavItem: React.FC<NavItemProps> = ({
       }}
       className={`group relative flex flex-col md:flex-row items-center justify-center md:justify-start w-full px-2 py-3 md:py-2 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 overflow-hidden ${
         currentView === view 
-          ? 'bg-gradient-to-r from-primary to-blue-600 text-white shadow-lg shadow-primary/25 scale-105' 
-          : 'text-textSecondary dark:text-slate-300 hover:bg-gradient-to-r hover:from-surface-light hover:to-gray-100 dark:hover:from-slate-700 dark:hover:to-slate-600 hover:text-textPrimary dark:hover:text-slate-100 hover:shadow-lg'
+          ? 'bg-gradient-to-r from-ice-400 to-ice-600 text-white shadow-lg shadow-ice-500/30 scale-105' 
+          : 'text-ice-100 dark:text-slate-300 hover:bg-sidebar-600 dark:hover:bg-slate-700 hover:text-white dark:hover:text-slate-100 hover:shadow-lg'
       }`}
     >
       {/* Glow effect for active state */}
       {currentView === view && (
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-600/20 animate-pulse"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-ice-500/20 to-ice-600/20 animate-pulse"></div>
       )}
       
       {/* Icon with animation */}
       <div className={`transition-all duration-300 ease-in-out ${
         currentView === view 
           ? 'text-white transform scale-110' 
-          : 'group-hover:scale-110 group-hover:text-primary dark:group-hover:text-blue-400'
+          : 'group-hover:scale-110 group-hover:text-ice-200 dark:group-hover:text-blue-400'
       }`}>
         {icon}
       </div>
@@ -54,7 +54,7 @@ export const NavItem: React.FC<NavItemProps> = ({
       <span className={`mt-1 md:mt-0 md:ml-3 text-xs md:text-sm transition-all duration-300 ease-in-out ${
         currentView === view 
           ? 'text-white font-semibold' 
-          : 'group-hover:text-primary dark:group-hover:text-blue-400 group-hover:font-medium'
+          : 'group-hover:text-ice-100 dark:group-hover:text-blue-400 group-hover:font-medium'
       }`}>
         {label}
       </span>

@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+@theme {
+  /* Ice theme colors - light blue/cyan tones */
+  --color-ice-50: #f0f9ff;
+  --color-ice-100: #e0f2fe;
+  --color-ice-200: #bae6fd;
+  --color-ice-300: #7dd3fc;
+  --color-ice-400: #38bdf8;
+  --color-ice-500: #0ea5e9;
+  --color-ice-600: #0284c7;
+  --color-ice-700: #0369a1;
+  --color-ice-800: #075985;
+  --color-ice-900: #0c4a6e;
+
+  /* Sidebar theme colors - deep blue tones */
+  --color-sidebar-50: #eff6ff;
+  --color-sidebar-100: #dbeafe;
+  --color-sidebar-200: #bfdbfe;
+  --color-sidebar-300: #93c5fd;
+  --color-sidebar-400: #60a5fa;
+  --color-sidebar-500: #3b82f6;
+  --color-sidebar-600: #2563eb;
+  --color-sidebar-700: #1d4ed8;
+  --color-sidebar-800: #1e40af;
+  --color-sidebar-900: #1e3a8a;
+}
+
 /* Ensure smooth transitions for dark mode */
 * {
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
